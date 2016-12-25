@@ -1,0 +1,177 @@
+package edu.wm.cs.cs301.amazebyeyosyas.ui;
+
+import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Handler;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+
+import edu.wm.cs.cs301.amazebyeyosyas.R;
+import edu.wm.cs.cs301.amazebyeyosyas.falstad.Constants;
+import edu.wm.cs.cs301.amazebyeyosyas.falstad.ManualDriver;
+import edu.wm.cs.cs301.amazebyeyosyas.falstad.MazeFileWriter;
+import edu.wm.cs.cs301.amazebyeyosyas.falstad.MazePanel;
+import edu.wm.cs.cs301.amazebyeyosyas.falstad.Pledge;
+import edu.wm.cs.cs301.amazebyeyosyas.falstad.RobotDriver;
+import edu.wm.cs.cs301.amazebyeyosyas.falstad.Singleton;
+import edu.wm.cs.cs301.amazebyeyosyas.falstad.WallFollower;
+import edu.wm.cs.cs301.amazebyeyosyas.falstad.Wizard;
+import edu.wm.cs.cs301.amazebyeyosyas.generation.BSPNode;
+import edu.wm.cs.cs301.amazebyeyosyas.generation.Cells;
+import edu.wm.cs.cs301.amazebyeyosyas.generation.MazeFactory;
+import edu.wm.cs.cs301.amazebyeyosyas.generation.Order;
+
+/**
+ * Same as STATE_GENERATING. It is the screen shown when the maze is loading.
+ */
+public class GeneratingActivity extends AppCompatActivity {
+
+    public String tag = "GeneratingActivity";
+
+    public String driver = "";
+    public String builder = "";
+    public int skillLevel = 0;
+
+    private int progressStatus;
+    private Handler handler;
+    private boolean backButtonPressed;
+    private ProgressBar progressBar;
+    private TextView progressStatusTextView;
+
+    private Singleton maze;
+    private RobotDriver robotDriver;
+    private MazeFactory factory = new MazeFactory();
+
+    /**
+     * Perform initialization of all fragments and loaders.
+     * @param savedInstanceState - If the activity is being re-initialized after previously being shut down then this Bundle contains the data it most recently supplied in onSaveInstanceState.
+     */
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_generating);
+
+        // Get the parameter information that the title screen sent through an intent
+        Intent intent = getIntent();
+        if (intent != null) {
+            driver = intent.getStringExtra("driver_selected");
+            builder = intent.getStringExtra("builder_selected");
+            skillLevel = intent.getIntExtra("skillLevel_selected", 0);
+        }
+        Log.v(tag, "Driver received from AMazeActivity: " + driver);
+        Log.v(tag, "Builder received from AMazeActivity: " + builder);
+        Log.v(tag, "Skill Level received from AMazeActivity: " + skillLevel);
+
+        //controller = (MazeController) getApplicationContext();
+        //controller.setBuilder(builder);
+        //controller.setDriver(driver);
+        //controller.setSkillLevel(skillLevel);
+        //controller.init();
+
+        //Log.v(tag, "PERCENT DONE: " + controller.getPercentDone());
+        //Log.v(tag, "MAZE_CONFIG: " + controller.getMazeConfiguration());
+
+        progressBar = (ProgressBar) findViewById(R.id.generatingMaze_progressBar);
+        progressStatusTextView = (TextView) findViewById(R.id.progressStatus_textView);
+        progressStatus = 0;
+        handler = new Handler();
+        backButtonPressed = false;
+
+        // Background thread
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                maze = maze.getInstance();
+                MazePanel panel = new MazePanel(getApplicationContext());
+                maze.getMazeController().setMazePanel(panel);
+                if (driver.equals("Manual")) {
+                    robotDriver = new ManualDriver();
+                } else {
+                    switch(driver) {
+                        case "Wizard":
+                            robotDriver = new Wizard();
+                            break;
+                        case "Wall Follower":
+                            robotDriver = new WallFollower();
+                            break;
+                        case "Pledge":
+                            robotDriver = new Pledge();
+                    }
+                }
+                maze.updateDriver(robotDriver);
+                switch (builder) {
+                    case "DFS":
+                        maze.updateBuilder(Order.Builder.DFS);
+                        break;
+                    case "Eller":
+                        maze.updateBuilder(Order.Builder.Eller);
+                        break;
+                    case "Prim":
+                        maze.updateBuilder(Order.Builder.Prim);
+                        break;
+                }
+                maze.updateSkillLevel(skillLevel);
+                factory.order(maze.getMazeController());
+                Log.v(tag, "Actual Driver used to build maze: " + maze.getMazeController().getRobotDriver());
+                Log.v(tag, "Actual Builder used to build maze: " + maze.getMazeController().getBuilder());
+                Log.v(tag, "Actual Skill Level used to build maze: " + maze.getMazeController().getSkillLevel());
+
+                while (progressStatus < 100) {
+                    //Log.v(tag, "PercentDone: " + maze.getMazeController().getPercentDone());
+                    progressStatus = Integer.parseInt(maze.getMazeController().getPercentDone());
+                    //progressStatus++;
+                    handler.post(new Runnable() {
+                        @SuppressLint("SetTextI18n")
+                        @Override
+                        public void run() {
+                            progressStatusTextView.setText(progressStatus + "%");
+                            progressBar.setProgress(progressStatus);
+
+                        }
+                    });
+                }
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                if (!backButtonPressed) {
+                    Intent intent = new Intent(GeneratingActivity.this, PlayActivity.class);
+                    intent.putExtra("driver_selected", driver);
+                    startActivity(intent);
+                    //writeToFile(skillLevel);
+                }
+            }
+        }).start();
+    }
+
+    private void writeToFile(int skillLevel) {
+        MazeFileWriter fileWriter = new MazeFileWriter();
+        fileWriter.store("find_me", Constants.VIEW_WIDTH, Constants.VIEW_HEIGHT, 1, 1, new BSPNode(), new Cells(4, 4), new int[][]{}, 1, 1);
+    }
+
+    /**
+     * Overrides the back button so when clicked, the app goes to AMazeActivity
+     */
+    @Override
+    public void onBackPressed() {
+        backButtonPressed = true;
+        showToast("Back Button Pressed");
+        Intent backToTitle = new Intent(GeneratingActivity.this, AMazeActivity.class);
+        startActivity(backToTitle);
+        maze.killInstance();
+    }
+
+    /**
+     * Displays a toast with the given string message
+     * @param s - string message to be displayed
+     */
+    private void showToast(String s) {
+        //Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
+        //Log.v(tag, s);
+    }
+
+}

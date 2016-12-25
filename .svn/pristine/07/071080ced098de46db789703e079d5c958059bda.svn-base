@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">AMazeByEyosyas</string>
+    <string name="welcome">Welcome to the Maze</string>
+    <string name="choose_a">Choose a:</string>
+    <string name="skill_level">Skill Level</string>
+    <string name="maze_generator">Maze Generator</string>
+    <string name="maze_driver">Maze Driver</string>
+    <string name="revisit">Revisit</string>
+    <string name="explore">Explore</string>
+</resources>

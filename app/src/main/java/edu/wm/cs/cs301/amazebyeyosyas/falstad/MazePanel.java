@@ -1,0 +1,267 @@
+package edu.wm.cs.cs301.amazebyeyosyas.falstad;
+
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Path;
+import android.graphics.Rect;
+import android.graphics.RectF;
+import android.graphics.drawable.Drawable;
+import android.util.AttributeSet;
+import android.view.View;
+
+import edu.wm.cs.cs301.amazebyeyosyas.R;
+import edu.wm.cs.cs301.amazebyeyosyas.falstad.Constants.Colors;
+
+/**
+ * Used for drawing a maze.
+ *
+ */
+@SuppressWarnings("ALL")
+public class MazePanel extends View {
+
+    private Bitmap bitmap;
+    private Canvas canvas;
+    private Paint paint;
+    //private Drawable sky;
+    //private Drawable grass;
+    private Drawable mazeBackground;
+
+    /**
+     * Constructor.
+     * @param context
+     */
+    public MazePanel(Context context) {
+        super(context);
+        bitmap = Bitmap.createBitmap(Constants.VIEW_WIDTH, Constants.VIEW_HEIGHT, Bitmap.Config.ARGB_8888);
+        canvas = new Canvas(bitmap);
+        paint = new Paint();
+        //sky = getResources().getDrawable(R.drawable.sky);
+        //grass = getResources().getDrawable(R.drawable.bg_1);
+        mazeBackground = getResources().getDrawable(R.drawable.maze_background);
+    }
+
+    /**
+     * Constructor.
+     * @param context
+     * @param attrs
+     */
+    public MazePanel(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        bitmap = Bitmap.createBitmap(Constants.VIEW_WIDTH, Constants.VIEW_HEIGHT, Bitmap.Config.ARGB_8888);
+        canvas = new Canvas(bitmap);
+        paint = new Paint();
+        mazeBackground = getResources().getDrawable(R.drawable.maze_background);
+    }
+
+    /**
+     * Draws given canvas.
+     * @param canvas
+     */
+    @Override
+    public void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+        canvas.drawBitmap(bitmap, 0, 0, paint);
+    }
+
+    /**
+     *
+     * @param widthMeasureSpec
+     * @param heightMeasureSpec
+     */
+    @Override
+    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        this.setMeasuredDimension(Constants.VIEW_WIDTH, Constants.VIEW_HEIGHT);
+    }
+
+    /**
+     * Updates maze graphics.
+     */
+	public void update() {
+        invalidate();
+    }
+
+	/**
+	 * Fills a closed polygon defined by arrays of x and y coordinates
+	 * @param xPoints
+	 * @param yPoints
+	 * @param nPoints
+	 */
+	public void fillPolygon(int[] xPoints, int[] yPoints, int nPoints) {
+        paint.setStyle(Paint.Style.FILL);
+        Path path = new Path();
+        path.reset();
+        path.moveTo(xPoints[0], yPoints[0]);
+        for (int i = 1; i < nPoints; i++) {
+            path.lineTo(xPoints[i], yPoints[i]);
+        }
+        path.lineTo(xPoints[0], yPoints[0]);
+        canvas.drawPath(path, paint);
+	}
+
+	/**
+	 * Sets paint's current color to the specified color, given a Colors enum
+	 * @param color enum
+	 */
+	public void setColor(Colors color) {
+		switch (color) {
+		case BLUE:
+			paint.setColor(Color.BLUE);
+			break;
+		case DARKGRAY:
+            paint.setColor(Color.DKGRAY);
+			break;
+		case BLACK:
+			paint.setColor(Color.BLACK);
+			break;
+		case WHITE:
+            paint.setColor(Color.WHITE);
+			break;
+		case RED:
+            paint.setColor(Color.RED);
+			break;
+		case GRAY:
+            paint.setColor(Color.GRAY);
+			break;
+		case YELLOW:
+            paint.setColor(Color.YELLOW);
+			break;
+        case GREEN:
+            paint.setColor(Color.GREEN);
+            break;
+		}
+	}
+
+	/**
+	 * Sets paint's current color to the specified color, given an int array.
+	 * @param color
+	 */
+	public void setSegColor(int[] color) {
+        paint.setColor(Color.rgb(color[0], color[1], color[2]));
+    }
+	
+	/**
+	 * Fills the specified rectangle in canvas based on parameters.
+	 * @param x
+	 * @param y
+	 * @param width
+	 * @param height
+	 */
+	public void fillRect(int x, int y, int width, int height) {
+        paint.setStyle(Paint.Style.FILL);
+        Rect rect = new Rect(x, y, x + width, y + height);
+        canvas.drawRect(rect, paint);
+	}
+
+	/**
+	 * Draws a line using the given coordinates.
+	 * @param x1
+	 * @param y1
+	 * @param x2
+	 * @param y2
+	 */
+	public void drawLine(int x1, int y1, int x2, int y2) {
+        canvas.drawLine(x1, y1, x2, y2, paint);
+	}
+
+	/**
+	 * Fills an oval bounded by the specified parameters with the current color.
+	 * @param x
+	 * @param y
+	 * @param width
+	 * @param height
+	 */
+	public void fillOval(int x, int y, int width, int height) {
+        paint.setStyle(Paint.Style.FILL);
+        RectF oval = new RectF(x, y, x + width, y + height);
+        canvas.drawOval(oval, paint);
+	}
+
+	/**
+	 * Gets the canvas (what was the graphics object)
+	 * @return graphicsObj
+	 */
+	public Canvas getGraphicsObj(){
+        //If I change the name getGraphicsObj here I would also have to change it in MazeController(line 361)
+		return canvas;
+        //return graphicsObj;
+	}
+
+    public void drawMazeBackground(int left, int top, int right, int bottom) {
+        mazeBackground.setBounds(left, top, right, bottom);
+        mazeBackground.draw(canvas);
+    }
+
+    // not sure if we need the following methods that have been commented out...
+    /**
+     * Updates the container
+     */
+	/*@Override
+	public void update(Graphics g) {
+		paint(g) ;
+	}
+	public void update() {
+		paint(getGraphics()) ;
+	}*/
+
+    /**
+     * Draws the buffer image to the given graphics object.
+     * This method is called when this panel should redraw itself.
+     */
+	/*@Override
+	public void paint(Graphics g) {
+		if (null == g) {
+			System.out.println("MazePanel.paint: no graphics object, skipping drawImage operation") ;
+		}
+		else {
+			g.drawImage(bufferImage,0,0,null) ;
+		}
+	}*/
+
+    /**
+     * Assign value to bufferImage and graphicsObj
+     */
+	/*public void initBufferImage() {
+		bufferImage = createImage(Constants.VIEW_WIDTH, Constants.VIEW_HEIGHT);
+		graphicsObj = this.getBufferGraphics();
+		if (null == bufferImage)
+		{
+			System.out.println("Error: creation of buffered image failed, presumedly container not displayable");
+		}
+	}*/
+
+    /**
+     * Obtains a graphics object that can be used for drawing.
+     * Multiple calls to the method will return the same graphics object
+     * such that drawing operations can be performed in a piecemeal manner
+     * and accumulate. To make the drawing visible on screen, one
+     * needs to trigger a call of the paint method, which happens
+     * when calling the update method.
+     * @return graphics object to draw on
+     */
+	/*public Graphics getBufferGraphics() {
+		if (null == bufferImage)
+			initBufferImage() ;
+		if (null == bufferImage)
+			return null ;
+		return bufferImage.getGraphics() ;
+	}*/
+
+	/**
+	 * Sets the value of a single preference for the rendering algorithms
+	 */
+	/*public void setRenderingHints() {
+        /*
+        Graphics2D graphicsObj = (Graphics2D) this.graphicsObj;
+		// became necessary when lines of polygons that were not horizontal or vertical
+		// looked ragged
+		graphicsObj.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+				RenderingHints.VALUE_ANTIALIAS_ON);
+		graphicsObj.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+				RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+	}*/
+	
+}

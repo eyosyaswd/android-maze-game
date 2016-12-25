@@ -1,0 +1,85 @@
+package edu.wm.cs.cs301.amazebyeyosyas.falstad;
+
+import edu.wm.cs.cs301.amazebyeyosyas.falstad.Robot.Turn;
+import edu.wm.cs.cs301.amazebyeyosyas.generation.Distance;
+
+/**
+ * ManualDriver is a class that specifies a robot driver in which the user manually drives a robot.
+ * @author Eyosyas
+ *
+ */
+public class ManualDriver implements RobotDriver {
+	
+	private Robot robot;
+	private int width;
+	private int height;
+	private Distance distance;
+	private int pathLength;
+	
+	/**
+	 * ManualDriver constructor
+	 */
+	public ManualDriver() {
+		robot = null;
+		width = 0;
+		height = 0;
+		distance = null;
+		pathLength = 0;
+	}
+	
+	@Override
+	public void setRobot(Robot r) {
+		robot = r;
+	}
+
+	@Override
+	public void setDimensions(int width, int height) {
+		this.width = width;
+		this.height = height;
+	}
+
+	@Override
+	public void setDistance(Distance distance) {
+		this.distance = distance;
+	}
+
+	@Override
+	public boolean drive2Exit() throws Exception {
+		return false;
+	}
+
+	@Override
+	public float getEnergyConsumption() {
+		return 2500 - robot.getBatteryLevel();
+	}
+
+	@Override
+	public int getPathLength() {
+		return ((ManualDriver) robot).getPathLength();
+	}
+	
+	/**
+	 * This method will help to manually drive the robot in the maze. It receives a keyboard input and affects the robot.
+	 * @param key
+	 * @return true
+	 */
+	public boolean keyDown(int key) {
+		switch(key) {
+			case 'k': case '8':
+				robot.move(1, true);
+				break;
+			case 'h': case '4':
+				robot.rotate(Turn.LEFT);
+				break;
+			case 'l': case '6':
+				robot.rotate(Turn.RIGHT);
+				break;
+			case 'j': case '2':
+				robot.rotate(Turn.AROUND);
+				robot.move(1, true);
+				break;
+		}
+		return true;
+	}
+	
+}

@@ -1,0 +1,45 @@
+package edu.wm.cs.cs301.amazebyeyosyas.ui;
+
+import android.content.Intent;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.Spinner;
+
+import edu.wm.cs.cs301.amazebyeyosyas.R;
+
+public class AMazeActivity extends AppCompatActivity {
+
+    /**
+     * Perform initialization of all fragments and loaders.
+     * @param savedInstanceState - If the activity is being re-initialized after previously being shut down then this Bundle contains the data it most recently supplied in onSaveInstanceState.
+     */
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_amaze);
+
+        Spinner builderSpinner = (Spinner) findViewById(R.id.builder_spinner);
+        ArrayAdapter<CharSequence> builderAdapter = ArrayAdapter.createFromResource(this, R.array.builder, android.R.layout.simple_spinner_item);
+        builderAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        builderSpinner.setAdapter(builderAdapter);
+
+        Spinner driverSpinner = (Spinner) findViewById(R.id.driver_spinner);
+        ArrayAdapter<CharSequence> driverAdapter = ArrayAdapter.createFromResource(this, R.array.driver, android.R.layout.simple_spinner_item);
+        driverAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        driverSpinner.setAdapter(driverAdapter);
+
+        Button explore = (Button) findViewById(R.id.explore_button);
+        explore.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                Intent exploreIntent = new Intent(AMazeActivity.this, GeneratingActivity.class);
+                startActivity(exploreIntent);
+            }
+        });
+    }
+
+}

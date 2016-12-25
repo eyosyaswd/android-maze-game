@@ -1,0 +1,18 @@
+[
+    {
+        "merged": "C:\\Users\\Eyosyas\\AndroidStudioProjects\\AMazeByEyosyas\\app\\build\\intermediates\\res\\merged\\debug\\raw\\bg_music.mp3",
+        "source": "C:\\Users\\Eyosyas\\AndroidStudioProjects\\AMazeByEyosyas\\app\\src\\main\\res\\raw\\bg_music.mp3"
+    },
+    {
+        "merged": "C:\\Users\\Eyosyas\\AndroidStudioProjects\\AMazeByEyosyas\\app\\build\\intermediates\\res\\merged\\debug\\raw\\boo.mp3",
+        "source": "C:\\Users\\Eyosyas\\AndroidStudioProjects\\AMazeByEyosyas\\app\\src\\main\\res\\raw\\boo.mp3"
+    },
+    {
+        "merged": "C:\\Users\\Eyosyas\\AndroidStudioProjects\\AMazeByEyosyas\\app\\build\\intermediates\\res\\merged\\debug\\raw\\walking.mp3",
+        "source": "C:\\Users\\Eyosyas\\AndroidStudioProjects\\AMazeByEyosyas\\app\\src\\main\\res\\raw\\walking.mp3"
+    },
+    {
+        "merged": "C:\\Users\\Eyosyas\\AndroidStudioProjects\\AMazeByEyosyas\\app\\build\\intermediates\\res\\merged\\debug\\raw\\applause.mp3",
+        "source": "C:\\Users\\Eyosyas\\AndroidStudioProjects\\AMazeByEyosyas\\app\\src\\main\\res\\raw\\applause.mp3"
+    }
+]

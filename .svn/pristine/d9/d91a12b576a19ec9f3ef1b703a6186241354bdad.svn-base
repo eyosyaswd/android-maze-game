@@ -1,0 +1,190 @@
+package edu.wm.cs.cs301.amazebyeyosyas.falstad;
+
+import edu.wm.cs.cs301.amazebyeyosyas.falstad.Robot.Direction;
+import edu.wm.cs.cs301.amazebyeyosyas.falstad.Robot.Turn;
+import edu.wm.cs.cs301.amazebyeyosyas.generation.CardinalDirection;
+import edu.wm.cs.cs301.amazebyeyosyas.generation.Distance;
+
+/**
+ * Wizard is a class that specifies a robot driver that uses the wizard algorithm to drive a robot.
+ * 
+ * Responsibilities:
+ * - drives a robot to the exit of a maze
+ * 
+ * Collaborators:
+ * - RobotDriver
+ * - BasicRobot
+ * - MazeApplication
+ * - MazeController
+ * 
+ * @author Eyosyas
+ *
+ */
+public class Wizard implements RobotDriver {
+	
+	private BasicRobot robot;
+	private int width;
+	private int height;
+	private Distance distance;
+	private int pathLength;
+	
+	/**
+	 * Wizard constructor
+	 */
+	public Wizard() {
+		robot = null;
+		width = 0;
+		height = 0;
+		distance = null;
+		pathLength = 0;
+	}
+	
+	@Override
+	public void setRobot(Robot r) {
+		robot = (BasicRobot) r;
+	}
+
+	@Override
+	public void setDimensions(int width, int height) {
+		this.width = width;
+		this.height = height;
+	}
+
+	@Override
+	public void setDistance(Distance distance) {
+		this.distance = distance;
+	}
+
+	/**
+	 * drive2Exit uses the wizard algorithm to automatically drive a robot to the exit of a maze
+	 * 
+	 * This is essentially the algorithm I followed:
+	 * 	- First get the current position and direction of the robot
+	 * 	- Get the position of the neighbor (where the robot is supposed to go to) and it's direction relative to the robot's current position
+	 * 	- If the robot is facing where the neighbor is, move it forward; else rotate it towards the neighbor and then move it forward
+	 * 	- Once the exit position if found, turn towards the exit and walk out
+	 */
+	@Override
+	public boolean drive2Exit() throws Exception {
+		
+		while (!robot.isAtExit()) {
+			//checks if the robot still has batteryLevel
+			if (robot.hasStopped())
+				return false;
+			
+			// getting the robot's current position and direction
+			int[] currentPosition = robot.getMazeController().getCurrentPosition();
+			CardinalDirection currentDirection = robot.getMazeController().getCurrentDirection();
+			
+			// getting the position of the neighbor that is closest to the exit and its CardinalDirection with respect to the robot
+			int[] neighborPosition  = robot.getMazeController().getMazeConfiguration().getNeighborCloserToExit(currentPosition[0], currentPosition[1]);
+			CardinalDirection neighborDirection = CardinalDirection.getDirection(neighborPosition[0] - currentPosition[0], neighborPosition[1] - currentPosition[1]);
+			//CardinalDirection neighborDirection = CardinalDirection.getDirection(neighborPosition[0] - currentPosition[1], neighborPosition[1] - currentPosition[1]);
+			
+			// tells the robot to move towards the neighbor position
+			switch (currentDirection) {
+			case East:
+				switch (neighborDirection) {
+				case East: robot.move(1, false); break;
+				case South: rotateLeftThenMove(robot); break;
+				case West: rotateRightThenMove(robot); break;
+				case North: rotateRightThenMove(robot); break;
+				} break;
+			case South:
+				switch (neighborDirection) {
+				case East: rotateRightThenMove(robot); break;
+				case South: robot.move(1, false); break;
+				case West: rotateLeftThenMove(robot); break;
+				case North: rotateAroundThenMove(robot); break;
+				} break;
+			case West:
+				switch (neighborDirection) {
+				case East: rotateAroundThenMove(robot); break;
+				case South: rotateRightThenMove(robot); break;
+				case West: robot.move(1, false); break;
+				case North: rotateLeftThenMove(robot); break;
+				} break;
+			case North:
+				switch (neighborDirection) {
+				case East: rotateLeftThenMove(robot); break;
+				case South: rotateAroundThenMove(robot); break;
+				case West: rotateRightThenMove(robot); break;
+				case North: robot.move(1, false); break;
+				} break;
+			}
+		}
+		
+		// now that the robot is at the exit position, rotate towards the exit opening and move
+		if (robot.hasStopped())
+			return false;
+		exitMaze(robot);
+		return true;
+	}
+
+	/**
+	 * Helper method that makes the robot turn towards the exit and move forward so it can exit
+	 * @param robot
+	 */
+	private void exitMaze(BasicRobot robot) {
+		if (robot.canSeeExit(Direction.LEFT))
+			rotateLeftThenMove(robot);
+		else if (robot.canSeeExit(Direction.RIGHT))
+			rotateRightThenMove(robot);
+		else 
+			robot.move(1, false);
+	}
+
+	/**
+	 * Helper method that rotates a robot to the left then moves it forward
+	 * @param robot
+	 */
+	private void rotateLeftThenMove(BasicRobot robot) {
+		robot.rotate(Turn.LEFT);
+		move(robot);
+	}
+	
+	/**
+	 * Helper method that rotates a robot to the right then moves it forward
+	 * @param robot
+	 */
+	private void rotateRightThenMove(BasicRobot robot) {
+		robot.rotate(Turn.RIGHT);
+		move(robot);
+	}
+	
+	/**
+	 * Helper method that rotates a robot around then moves it forward
+	 * @param robot
+	 */
+	private void rotateAroundThenMove(BasicRobot robot) {
+		robot.rotate(Turn.AROUND);
+		move(robot);
+	}
+
+	/**
+	 * Helper method that moves a robot forward only if it has enough battery
+	 * @param robot
+	 */
+	private void move(BasicRobot robot) {
+		if (!robot.hasStopped())
+			robot.move(1, false);
+	}
+
+	/**
+	 * Returns how much energy was consumed
+	 */
+	@Override
+	public float getEnergyConsumption() {
+		return 2500 - robot.getBatteryLevel();
+	}
+
+	/**
+	 * Returns the path length
+	 */
+	@SuppressWarnings("static-access")
+	@Override
+	public int getPathLength() {
+		return (int) robot.getPathLength();
+	}
+
+}

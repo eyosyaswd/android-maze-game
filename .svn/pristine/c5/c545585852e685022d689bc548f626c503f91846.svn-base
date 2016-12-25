@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<instant-run
+    abi="x86"
+    api-level="23"
+    density="xhdpi"
+    format="8"
+    plugin-version="2.2.2"
+    timestamp="288874193500834"
+    token="3442056477955927165"
+    verifier="COLD_SWAP_REQUESTED" >
+
+    <task
+        name="javac"
+        duration="0" />
+    <task
+        name="instant-run-dex"
+        duration="0" />
+    <task
+        name="instant-run-transform"
+        duration="0" />
+    <task
+        name="verifier"
+        duration="0" />
+
+    <build
+        timestamp="288796461118635"
+        verifier="FULL_BUILD_REQUESTED" >
+        <artifact
+            location="C:\Users\Eyosyas\AndroidStudioProjects\AMazeByEyosyas\app\build\outputs\apk\app-debug.apk"
+            type="MAIN" />
+    </build>
+    <build
+        timestamp="288874193500834"
+        verifier="COLD_SWAP_REQUESTED" />
+
+</instant-run>

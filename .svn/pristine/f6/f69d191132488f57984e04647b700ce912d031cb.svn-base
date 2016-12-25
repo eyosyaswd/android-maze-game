@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<instant-run
+    abi="x86"
+    api-level="23"
+    density="xhdpi"
+    format="8"
+    plugin-version="2.2.2"
+    timestamp="516256781908012"
+    token="3442056477955927165"
+    verifier="COLD_SWAP_REQUESTED" >
+
+    <task
+        name="javac"
+        duration="342" />
+    <task
+        name="instant-run-dex"
+        duration="0" />
+    <task
+        name="instant-run-transform"
+        duration="184" />
+    <task
+        name="verifier"
+        duration="18" />
+
+    <artifact
+        location="C:\Users\Eyosyas\AndroidStudioProjects\AMazeByEyosyas\app\build\intermediates\transforms\dex\debug\folders\1000\5\slice_6\classes.dex"
+        type="DEX" />
+
+    <build
+        timestamp="497160671320967"
+        verifier="BINARY_MANIFEST_FILE_CHANGE" >
+        <artifact
+            location="C:\Users\Eyosyas\AndroidStudioProjects\AMazeByEyosyas\app\build\outputs\apk\app-debug.apk"
+            type="MAIN" />
+    </build>
+    <build
+        timestamp="499452608141933"
+        verifier="COLD_SWAP_REQUESTED" >
+        <artifact
+            location="C:\Users\Eyosyas\AndroidStudioProjects\AMazeByEyosyas\app\build\intermediates\transforms\dex\debug\folders\1000\5\slice_4\classes.dex"
+            type="DEX" />
+    </build>
+    <build
+        timestamp="509472946492360"
+        verifier="COLD_SWAP_REQUESTED" >
+        <artifact
+            location="C:\Users\Eyosyas\AndroidStudioProjects\AMazeByEyosyas\app\build\intermediates\instant-run-resources\resources-debug.ir.ap_"
+            type="RESOURCES" />
+    </build>
+    <build
+        timestamp="514206545831464"
+        verifier="COLD_SWAP_REQUESTED" >
+        <artifact
+            location="C:\Users\Eyosyas\AndroidStudioProjects\AMazeByEyosyas\app\build\intermediates\transforms\dex\debug\folders\1000\5\slice_9\classes.dex"
+            type="DEX" />
+    </build>
+    <build
+        timestamp="516256781908012"
+        verifier="COLD_SWAP_REQUESTED" >
+        <artifact
+            location="C:\Users\Eyosyas\AndroidStudioProjects\AMazeByEyosyas\app\build\intermediates\transforms\dex\debug\folders\1000\5\slice_6\classes.dex"
+            type="DEX" />
+    </build>
+
+</instant-run>

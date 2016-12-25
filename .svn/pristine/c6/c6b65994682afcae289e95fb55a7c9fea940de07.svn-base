@@ -1,0 +1,86 @@
+package edu.wm.cs.cs301.amazebyeyosyas.ui;
+
+import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.os.Handler;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.util.Log;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import edu.wm.cs.cs301.amazebyeyosyas.R;
+
+public class GeneratingActivity extends AppCompatActivity {
+
+    public String tag = "GeneratingActivity";
+    private int progressStatus;
+    private Handler handler;
+    private boolean backButtonPressed;
+
+    /**
+     * Perform initialization of all fragments and loaders.
+     * @param savedInstanceState - If the activity is being re-initialized after previously being shut down then this Bundle contains the data it most recently supplied in onSaveInstanceState.
+     */
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_generating);
+
+        Intent driverIntent = getIntent();
+        String driver = "";
+        if (driverIntent != null) {
+            driver = driverIntent.getStringExtra("driver_selected");
+        }
+        Log.v(tag, "Driver is: " + driver);
+
+        final String finalDriver = driver;
+        final ProgressBar progressBar = (ProgressBar) findViewById(R.id.generatingMaze_progressBar);
+        final TextView progressStatusTextView = (TextView) findViewById(R.id.progressStatus_textView);
+        progressStatus = 0;
+        handler = new Handler();
+        backButtonPressed = false;
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (progressStatus < 100) {
+                    try {
+                        Thread.sleep(20);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    progressStatus++;
+                    handler.post(new Runnable() {
+                        @SuppressLint("SetTextI18n")
+                        @Override
+                        public void run() {
+                            progressStatusTextView.setText(progressStatus + "%");
+                            progressBar.setProgress(progressStatus);
+
+                        }
+                    });
+                }
+                if (!backButtonPressed) {
+                    Intent startIntent = new Intent(GeneratingActivity.this, PlayActivity.class);
+                    startIntent.putExtra("driver_selected", finalDriver);
+                    startActivity(startIntent);
+                }
+            }
+        }).start();
+    }
+
+    /**
+     * Overrides the back button so when clicked, the app goes to AMazeActivity
+     */
+    @Override
+    public void onBackPressed() {
+        backButtonPressed = true;
+        String toastStr = "Back Button Pressed";
+        Toast.makeText(getApplicationContext(), toastStr, Toast.LENGTH_SHORT).show();
+        Intent backToTitle = new Intent(GeneratingActivity.this, AMazeActivity.class);
+        startActivity(backToTitle);
+    }
+
+}

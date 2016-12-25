@@ -1,0 +1,81 @@
+package edu.wm.cs.cs301.amazebyeyosyas.falstad;
+
+import edu.wm.cs.cs301.amazebyeyosyas.generation.Distance;
+
+/**
+ * Explorer is a class that specifies a robot driver that uses the explorer algorithm to drive a robot.
+ * 
+ * Responsibilities:
+ * - drives a robot to the exit of a maze
+ * 
+ * Collaborators:
+ * - RobotDriver
+ * - BasicRobot
+ * - MazeApplication
+ * - MazeController
+ * 
+ * @author Eyosyas
+ *
+ */
+public class Explorer implements RobotDriver {
+	
+	private BasicRobot robot;
+	private int width;
+	private int height;
+	private Distance distance;
+	private int pathLength;
+	
+	/**
+	 * Wizard constructor
+	 */
+	public Explorer() {
+		robot = null;
+		width = 0;
+		height = 0;
+		distance = null;
+		pathLength = 0;
+	}
+	
+	@Override
+	public void setRobot(Robot r) {
+		robot = (BasicRobot) r;
+		
+	}
+
+	@Override
+	public void setDimensions(int width, int height) {
+		this.width = width;
+		this.height = height;
+		
+	}
+
+	@Override
+	public void setDistance(Distance distance) {
+		this.distance = distance;
+		
+	}
+
+	@Override
+	public boolean drive2Exit() throws Exception {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	/**
+	 * Returns how much energy was consumed
+	 */
+	@Override
+	public float getEnergyConsumption() {
+		return 2500 - robot.getBatteryLevel();
+	}
+
+	/**
+	 * Returns the path length
+	 */
+	@SuppressWarnings("static-access")
+	@Override
+	public int getPathLength() {
+		return (int) robot.getPathLength();
+	}
+
+}

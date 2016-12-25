@@ -1,0 +1,162 @@
+package edu.wm.cs.cs301.amazebyeyosyas.falstad;
+
+import edu.wm.cs.cs301.amazebyeyosyas.falstad.Robot.Direction;
+import edu.wm.cs.cs301.amazebyeyosyas.falstad.Robot.Turn;
+import edu.wm.cs.cs301.amazebyeyosyas.generation.Distance;
+
+/**
+ * Pledge is a class that specifies a robot driver that uses Pledge's algorithm to drive a robot.
+ * 
+ * Responsibilities:
+ * - drives a robot to the exit of a maze
+ * 
+ * Collaborators:
+ * - RobotDriver
+ * - BasicRobot
+ * - MazeApplication
+ * - MazeController
+ * 
+ * @author Eyosyas
+ *
+ */
+public class Pledge implements RobotDriver {
+	
+	private BasicRobot robot;
+	private int width;
+	private int height;
+	private Distance distance;
+	private int pathLength;
+	
+	/**
+	 * Wizard constructor
+	 */
+	public Pledge() {
+		robot = null;
+		width = 0;
+		height = 0;
+		distance = null;
+		pathLength = 0;
+	}
+	
+	@Override
+	public void setRobot(Robot r) {
+		robot = (BasicRobot) r;
+	}
+
+	@Override
+	public void setDimensions(int width, int height) {
+		this.width = width;
+		this.height = height;
+	}
+
+	@Override
+	public void setDistance(Distance distance) {
+		this.distance = distance;
+		
+	}
+
+	/**
+	 * 
+	 * drive2Exit uses the pledge algorithm to automatically drive a robot to the exit of a maze
+	 * 
+	 */
+	@Override
+	public boolean drive2Exit() throws Exception {
+		while(!robot.isAtExit() && (robot.getBatteryLevel() > 0)) {
+			if (robot.distanceToObstacle(Direction.RIGHT) == 0){
+				if (robot.distanceToObstacle(Direction.FORWARD) == 0)
+					pledgeEq();
+				else
+					robot.move(1, false);
+			}
+			else {
+				rotateRightThenMove(robot);
+			}
+		}
+		
+		// now that the robot is at the exit position, rotate towards the exit opening and move
+		if (robot.hasStopped())
+			return false;
+		exitMaze(robot);
+		return true;
+	}
+	
+	private void pledgeEq(){
+		int count = 1;
+		robot.rotate(Turn.LEFT);
+		count -= 0;
+		while(count != 0 && robot.isAtExit() == false){
+			if(robot.distanceToObstacle(Direction.RIGHT) == 0 && robot.distanceToObstacle(Direction.FORWARD) == 0){
+				robot.rotate(Turn.LEFT);
+				count -= 1;
+			}
+			else if (robot.distanceToObstacle(Direction.RIGHT) == 0 && robot.distanceToObstacle(Direction.FORWARD) != 0){
+				robot.move(1, false);
+			}
+			else {
+				robot.rotate(Turn.RIGHT);
+				count += 1;
+				robot.move(1, false);
+				
+			}
+		}
+	}
+	
+	/**
+	 * Helper method that makes the robot turn towards the exit and move forward so it can exit
+	 * @param robot
+	 */
+	private void exitMaze(BasicRobot robot) {
+		if (robot.canSeeExit(Direction.LEFT))
+			rotateLeftThenMove(robot);
+		else if (robot.canSeeExit(Direction.RIGHT))
+			rotateRightThenMove(robot);
+		else 
+			robot.move(1, false);
+	}
+
+	/**
+	 * Helper method that rotates a robot to the left then moves it forward
+	 * @param robot
+	 */
+	private void rotateLeftThenMove(BasicRobot robot) {
+		robot.rotate(Turn.LEFT);
+		move(robot);
+	}
+	
+	/**
+	 * Helper method that rotates a robot to the right then moves it forward
+	 * @param robot
+	 */
+	private void rotateRightThenMove(BasicRobot robot) {
+		robot.rotate(Turn.RIGHT);
+		move(robot);
+	}
+
+	/**
+	 * Helper method that moves a robot forward only if it has enough battery
+	 * @param robot
+	 */
+	private void move(BasicRobot robot) {
+		if (!robot.hasStopped())
+			robot.move(1, false);
+	}
+
+	/**
+	 * Returns how much energy was consumed
+	 */
+	@Override
+	public float getEnergyConsumption() {
+		return 2500 - robot.getBatteryLevel();
+	}
+
+	/**
+	 * Returns the path length
+	 */
+	@SuppressWarnings("static-access")
+	@Override
+	public int getPathLength() {
+		return (int) robot.getPathLength();
+	}
+
+}

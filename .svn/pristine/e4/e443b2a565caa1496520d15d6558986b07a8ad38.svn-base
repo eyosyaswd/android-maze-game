@@ -1,0 +1,399 @@
+package edu.wm.cs.cs301.amazebyeyosyas.falstad;
+
+import edu.wm.cs.cs301.amazebyeyosyas.generation.CardinalDirection;
+import edu.wm.cs.cs301.amazebyeyosyas.generation.Cells;
+
+/**
+ * BasicRobot encapsulates access to all information that constitutes a robot in a maze.
+ * @author Eyosyas
+ *
+ */
+public class BasicRobot implements Robot {
+	
+	// protected instead of private for testing purposes
+	private MazeController controller;
+	private Cells cells;
+	private static float batteryLevel;
+	private CardinalDirection currentDirection;
+	protected int[] currentPosition;
+	private boolean leftSensor;
+	private boolean rightSensor;
+	private boolean frontSensor;
+	private boolean backSensor;
+	private boolean roomSensor;
+	private boolean hasStopped;
+	private static int pathLength;
+	
+	/**
+	 * BasicRobot constructor
+	 */
+	public BasicRobot() {
+		batteryLevel = 2500;
+		currentDirection = CardinalDirection.East;
+		currentPosition = new int[]{0,0};
+		leftSensor = true;
+		rightSensor = true;
+		frontSensor = true;
+		backSensor = true;
+		roomSensor = true;
+		hasStopped = false;
+		pathLength = 0;
+	}
+	
+	@Override
+	public void rotate(Turn turn) {
+		switch(turn) {
+		case LEFT: 
+			if (batteryLevel >= 3) {
+				//System.out.println("Rotate(left) method in BasicRobot is called");
+				controller.keyDown('h');
+				//currentDirection = currentDirection.rotateClockwise();
+				batteryLevel -= 3;
+			}
+			else
+				hasStopped = true;
+			break;
+		case RIGHT:
+			//System.out.println("Rotate(right) method in BasicRobot is called");
+			if (batteryLevel >= 3) {
+				controller.keyDown('l');
+				//currentDirection = currentDirection.rotateCounterclockwise();
+				batteryLevel -= 3;
+			}
+			else
+				hasStopped = true;
+			break;
+		case AROUND:
+			//System.out.println("Rotate(around) method in BasicRobot is called");
+			if (batteryLevel >= 6) {
+				controller.keyDown('h');
+				controller.keyDown('h');
+				//controller.keyDown(Event.RIGHT);
+				//currentDirection = currentDirection.oppositeDirection();
+				batteryLevel -= 6;
+			}
+			else
+				hasStopped = true;
+			break;
+		}	
+	}
+
+	@Override
+	public void move(int distance, boolean manual) {
+		
+		int[] startPosition = controller.getCurrentPosition();
+		//System.out.println("Start Position: " + controller.getCurrentPosition()[0] + " " + controller.getCurrentPosition()[1]);
+		//System.out.println("The move method in BasicRobot is called");
+		while (distance > 0 && !hasStopped) {
+			controller.keyDown('k');
+			if (startPosition[0] != controller.getCurrentPosition()[0] || startPosition[1] != controller.getCurrentPosition()[1]) {// if the current position has changed, do the following:
+				batteryLevel -= 5;
+				pathLength++;
+			}
+			distance--;
+			//if (this.isAtExit())
+				//System.out.println("Robot is at exit");
+		}
+		//System.out.println("New Position: " + controller.getCurrentPosition()[0] + " " + controller.getCurrentPosition()[1]);
+		
+		
+		
+		/*manual = true;
+		currentPosition = controller.getCurrentPosition();
+		switch(currentDirection) {
+		case North:
+			System.out.println("Move while facing North method in BasicRobot is called");
+			if (batteryLevel < 5) //when not manual, make hasStopped true when it reaches a border/wall and can't move anymore
+				hasStopped = true;
+			//controller.keyDown(107);
+			while (distance > 0 && hasStopped == false && currentPosition[1] > 0 && cells.hasNoWall(currentPosition[0], currentPosition[1], CardinalDirection.North)) {
+				//controller.keyDown(107);
+				currentPosition[1]--;
+				batteryLevel -= 5;
+				distance--;
+				pathLength++;
+				if (batteryLevel < 5)
+					hasStopped = true;
+			}
+			break;
+		case East:
+			System.out.println("Move while facing East method in BasicRobot is called");
+			if (batteryLevel < 5)
+				hasStopped = true;
+			//controller.keyDown(107);
+			while (distance > 0 && hasStopped == false && currentPosition[0] < cells.getCellHeight() - 1 && cells.hasNoWall(currentPosition[0], currentPosition[1], CardinalDirection.East)) {
+				currentPosition[0]++;
+				batteryLevel -= 5;
+				distance--;
+				pathLength++;
+				if (batteryLevel < 5)
+					hasStopped = true;
+			}
+			break;
+		case South:
+			System.out.println("Move while facing South method in BasicRobot is called");
+			if (batteryLevel < 5)
+				hasStopped = true;
+			//controller.keyDown(107);
+			while (distance > 0 && hasStopped == false && currentPosition[1] < cells.getCellHeight() - 1 && cells.hasNoWall(currentPosition[0], currentPosition[1], CardinalDirection.South)) {
+				currentPosition[1]++;
+				batteryLevel -= 5;
+				distance--;
+				pathLength++;
+				if (batteryLevel < 5)
+					hasStopped = true;
+			}
+			break;
+		case West:
+			System.out.println("Move while facing West method in BasicRobot is called");
+			if (batteryLevel < 5)
+				hasStopped = true;
+			controller.keyDown(107);
+			while (distance > 0 && hasStopped == false && currentPosition[0] > 0 && cells.hasNoWall(currentPosition[0], currentPosition[1], CardinalDirection.West)) {
+				currentPosition[0]--;
+				batteryLevel -= 5;
+				distance--;
+				pathLength++;
+				if (batteryLevel < 5)
+					hasStopped = true;
+			}
+			break;
+		}
+		controller.setCurrentPosition(currentPosition[0], currentPosition[1]);*/
+	}
+
+	@Override
+	public int[] getCurrentPosition() {
+		return currentPosition;
+	}
+
+	@Override
+	public void setMaze(MazeController maze) {
+		controller = maze;
+		//initCells();
+		//I don't think I need initCells()
+	}
+	
+	public void initCells() {
+		cells = new Cells(controller.getMazeConfiguration().getWidth(), controller.getMazeConfiguration().getHeight());
+		cells = controller.getMazeConfiguration().getMazecells();
+		currentPosition = controller.getCurrentPosition();
+		currentDirection = CardinalDirection.East;
+	}
+	
+	@Override
+	public boolean isAtExit() {
+		//controller.getMazeConfiguration() is not null but controller.getMazeConfiguration().someGetMethod() is null
+		//so how do I use controller.getMazeConfiguration().someGetMethod()?
+		
+		//assertNotNull(controller.getMazeConfiguration());
+		//assertNotNull(controller.getCells());
+		//assertNotNull(controller.getMazeConfiguration().getMazecells());
+		//assertNotNull(controller.getMazeConfiguration().getMazedists());
+		if (controller.getMazeConfiguration().getMazecells().isExitPosition(controller.getCurrentPosition()[0], controller.getCurrentPosition()[1]))
+			return true;
+		return false;
+	}
+
+	@Override
+	public boolean canSeeExit(Direction direction) throws UnsupportedOperationException {
+		if (batteryLevel >= 1) {
+			batteryLevel -= 1;
+			if (distanceToObstacle(direction) == Integer.MAX_VALUE)
+				return true;
+			else
+				return false;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean isInsideRoom() throws UnsupportedOperationException {
+		if (controller.getMazeConfiguration().getMazecells().isInRoom(currentPosition[0], currentPosition[1]))
+			return true;
+		return false;
+	}
+
+	@Override
+	public boolean hasRoomSensor() {
+		return roomSensor;
+	}
+
+	@Override
+	public CardinalDirection getCurrentDirection() {
+		return currentDirection;
+	}
+
+	@Override
+	public float getBatteryLevel() {
+		return batteryLevel;
+	}
+
+	@Override
+	public void setBatteryLevel(float level) {
+		batteryLevel = level;
+	}
+
+	@Override
+	public float getEnergyForFullRotation() {
+		return 12;
+	}
+
+	@Override
+	public float getEnergyForStepForward() {
+		return 5;
+	}
+
+	@Override
+	public boolean hasStopped() {
+		return hasStopped;
+	}
+
+	@Override
+	public int distanceToObstacle(Direction direction) throws UnsupportedOperationException {
+		batteryLevel -= 1;
+		int distance = 0;
+		if (batteryLevel >= 1) {
+			CardinalDirection dir = null;
+			switch(direction) {
+			case RIGHT:
+				dir = controller.getCurrentDirection().rotateCounterclockwise();
+				break;
+			case LEFT:
+				dir = controller.getCurrentDirection().rotateClockwise();
+				break;
+			case FORWARD:
+				dir = controller.getCurrentDirection();
+				break;
+			case BACKWARD:
+				dir = controller.getCurrentDirection().oppositeDirection();
+				break;
+			}
+
+			int x = controller.getCurrentPosition()[0];
+			int y = controller.getCurrentPosition()[1];
+			
+			if (x >= controller.getMazeConfiguration().getMazecells().getCellWidth() || y >= controller.getMazeConfiguration().getMazecells().getCellHeight() || x < 0 || y < 0)
+				return Integer.MAX_VALUE;
+			
+			switch(dir) {
+			case North:
+				while (controller.getMazeConfiguration().getMazecells().hasNoWall(x, y, dir)) {
+					y--;
+					distance++;
+					if (x >= controller.getMazeConfiguration().getMazecells().getCellWidth() || y >= controller.getMazeConfiguration().getMazecells().getCellHeight() || x < 0 || y < 0)
+						return Integer.MAX_VALUE;
+				}
+				break;
+			case East:
+				while (controller.getMazeConfiguration().getMazecells().hasNoWall(x, y, dir)) {
+					x++;
+					distance++;
+					if (x >= controller.getMazeConfiguration().getMazecells().getCellWidth() || y >= controller.getMazeConfiguration().getMazecells().getCellHeight() || x < 0 || y < 0)
+						return Integer.MAX_VALUE;
+				}
+				break;
+			case South:
+				while (controller.getMazeConfiguration().getMazecells().hasNoWall(x, y, dir)) {
+					y++;
+					distance++;
+					if (x >= controller.getMazeConfiguration().getMazecells().getCellWidth() || y >= controller.getMazeConfiguration().getMazecells().getCellHeight() || x < 0 || y < 0)
+						return Integer.MAX_VALUE;
+				}
+				break;
+			case West:
+				while (controller.getMazeConfiguration().getMazecells().hasNoWall(x, y, dir)) {
+					x--;
+					distance++;
+					if (x >= controller.getMazeConfiguration().getMazecells().getCellWidth() || y >= controller.getMazeConfiguration().getMazecells().getCellHeight() || x < 0 || y < 0)
+						return Integer.MAX_VALUE;
+				}
+				break;
+			}
+			
+			/*
+			while (controller.getMazeConfiguration().getMazecells().hasNoWall(x, y, dir)) {
+				switch(dir) {
+				case North:
+					y--;
+					distance++;
+					if (x >= controller.getMazeConfiguration().getMazecells().getCellWidth() || y >= controller.getMazeConfiguration().getMazecells().getCellHeight() || x < 0 || y < 0)
+						return Integer.MAX_VALUE;
+					break;
+				case East:
+					x++;
+					distance++;
+					if (x >= controller.getMazeConfiguration().getMazecells().getCellWidth() || y >= controller.getMazeConfiguration().getMazecells().getCellHeight() || x < 0 || y < 0)
+						return Integer.MAX_VALUE;
+					break;
+				case South:
+					y++;
+					distance++;
+					if (x >= controller.getMazeConfiguration().getMazecells().getCellWidth() || y >= controller.getMazeConfiguration().getMazecells().getCellHeight() || x < 0 || y < 0)
+						return Integer.MAX_VALUE;
+					break;
+				case West:
+					x--;
+					distance++;
+					if (x >= controller.getMazeConfiguration().getMazecells().getCellWidth() || y >= controller.getMazeConfiguration().getMazecells().getCellHeight() || x < 0 || y < 0)
+						return Integer.MAX_VALUE;
+					break;	
+				}
+			}
+			*/
+		}
+		return distance;
+	}
+
+	@Override
+	public boolean hasDistanceSensor(Direction direction) {
+		switch(direction) {
+		case LEFT:
+			return leftSensor;
+		case RIGHT:
+			return rightSensor;
+		case FORWARD:
+			return frontSensor;
+		case BACKWARD:
+			return backSensor;
+		default:
+			return false;
+		}
+	}
+
+	/**
+	 * Returns the current MazeController object being used
+	 * @return controller which is a MazeController object
+	 */
+	public MazeController getMazeController() {
+		return controller;
+	}
+
+	/**
+	 * Returns the length of the path taken by the robot. A change in position adds to the pathLength.
+	 * @return pathLength float of robot
+	 */
+	public static float getPathLength() {
+		return pathLength;
+	}
+	
+	/**
+	 * Returns how much energy was consumed which is 2500 - how much batteryLevel is left
+	 * @return energy consumed
+	 */
+	public static float getEnergyConsumed() {
+		return 2500 - (float) batteryLevel;
+	}
+	
+	/**
+	 * Returns the cells object currently being used
+	 * @return cells
+	 */
+	public Cells getCells() {
+		return cells;
+	}
+	
+	public int[] getCurrPosition() {
+		return currentPosition;
+	}
+}

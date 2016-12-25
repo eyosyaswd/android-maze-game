@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="edu.wm.cs.cs301.amazebyeyosyas"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="19"
+        android:targetSdkVersion="24" />
+
+    <application
+        android:name="com.android.tools.fd.runtime.BootstrapApplication"
+        android:allowBackup="true"
+        android:icon="@drawable/a_maze_ing_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme" >
+
+        <!-- android:theme="@style/AppTheme" -->
+
+        <activity
+            android:name="edu.wm.cs.cs301.amazebyeyosyas.ui.AMazeActivity"
+            android:theme="@style/AppTheme" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="edu.wm.cs.cs301.amazebyeyosyas.ui.GeneratingActivity"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name="edu.wm.cs.cs301.amazebyeyosyas.ui.PlayActivity"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name="edu.wm.cs.cs301.amazebyeyosyas.ui.FinishActivity"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name="edu.wm.cs.cs301.amazebyeyosyas.ui.SplashActivity"
+            android:theme="@style/SplashTheme" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

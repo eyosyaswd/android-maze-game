@@ -1,0 +1,50 @@
+<resources>
+    <string name="app_name">AMazeByEyosyas</string>
+
+    <!-- AMazeActivity -->
+    <string name="welcome">Welcome to the Maze</string>
+    <string name="choose_a">Choose a:</string>
+    <string name="skill_level">Skill Level</string>
+    <string name="maze_generator">Maze Generator</string>
+    <string-array name="builder">
+        <item>DFS</item>
+        <item>Prim</item>
+        <item>Eller</item>
+    </string-array>
+    <string name="maze_driver">Maze Driver</string>
+    <string-array name="driver">
+        <item>Manual</item>
+        <item>Wizard</item>
+        <item>Wall Follower</item>
+        <item>Pledge</item>
+    </string-array>
+    <string name="revisit">Revisit</string>
+    <string name="explore">Explore</string>
+
+    <!-- GenerationActivity -->
+    <string name="generating_maze">Generating Maze…</string>
+    <string name="progress_status">0%</string>
+
+    <!--PlayActivity -->
+    <string name="show_map">Show Map</string>
+    <string name="hide_map">Hide Map</string>
+    <string name="show_solution">Show Solution</string>
+    <string name="hide_solution">Hide Solution</string>
+    <string name="show_walls">Show Walls</string>
+    <string name="hide_walls">Hide Walls</string>
+    <string name="pause">Pause</string>
+    <string name="start">Start</string>
+
+    <!-- FinishActivity -->
+    <string name="remaining_energy">Remaining Energy:  </string>
+    <string name="path_length">Path Length:</string>
+    <string name="energy_consumption">Energy Consumption:</string>
+    <string name="path_length_num">15.0</string>
+    <string name="energy_consumption_num">103.0</string>
+    <string name="you_won">YOU WON!</string>
+    <string name="congratulations">Congratulations!</string>
+    <string name="play_again">Play Again</string>
+    <string name="you_lost">YOU LOST :(</string>
+    <string name="dont_worry">Don\'t Worry. You can try again!</string>
+
+</resources>

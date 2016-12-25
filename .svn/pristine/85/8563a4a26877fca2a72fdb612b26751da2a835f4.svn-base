@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">AMazeByEyosyas</string>
+    <string name="welcome">Welcome to the Maze</string>
+    <string name="choose_a">Choose a:</string>
+    <string name="skill_level">Skill Level</string>
+    <string name="maze_generator">Maze Generator</string>
+    <string-array name="builder">
+        <item>DFS</item>
+        <item>Prim</item>
+        <item>Eller</item>
+    </string-array>
+    <string name="maze_driver">Maze Driver</string>
+    <string-array name="driver">
+        <item>Manual</item>
+        <item>Wizard</item>
+        <item>Wall Follower</item>
+    </string-array>
+    <string name="revisit">Revisit</string>
+    <string name="explore">Explore</string>
+    <string name="generating_maze">Generating Maze…</string>
+</resources>
